@@ -1,103 +1,13 @@
 import styles from "./styles.module.scss";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { useState, useEffect } from "react";
 import AuthorizationButton from "../../../Buttons/Authorization";
-import { ValidationError400, ValidationError409 } from "./errorInterfaces";
-export default function Form() {
-  const [initialDisability, setInitialDisability] = useState(true);
-  const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-  const initialValues = {
-    email: "",
-    userName: "",
-    fullName: "",
-    password: "",
-  };
+import useGetFormik from "./useGetFormik";
+interface Props {
+  setSignUpStep: React.Dispatch<React.SetStateAction<number>>
+}
+export default function Form(props: Props) {
+  const {setSignUpStep} = props;
 
-  const validationSchema = yup.object({
-    email: yup
-      .string()
-      .email("Enter valid email address")
-      .required("Email is a required field"),
-    userName: yup
-      .string()
-      .required("Username is a required field")
-      .max(40, "Username can't be longer than 40 characters")
-      .min(2, "Username must contain at least 2 characters"),
-    fullName: yup
-      .string()
-      .required("Full name is a required field")
-      .max(50, "Full name can't be longer than 50 characters")
-      .min(2, "Full name must contain at least 2 characters"),
-    password: yup
-      .string()
-      .required("Password is required")
-      .min(8, "Password must contain at least 8 characters"),
-  });
-
-  const onSubmit = async (values: {
-    email: string;
-    userName: string;
-    fullName: string;
-    password: string;
-  }) => {
-    try {
-      const body = JSON.stringify(values);
-      const res = await fetch("http://localhost:4000/auth/sign-up/step-1", {
-        headers: { "Content-Type": "application/json" },
-        body,
-        method: "POST",
-      });
-      const data = (await res.json()) as
-        | ValidationError409
-        | ValidationError400
-        | string;
-      if (res.status === 400) {
-        const { errors } = data as ValidationError400;
-        errors.forEach((err) => {
-          console.log(err);
-          formik.setFieldError(err.path, err.msg);
-        });
-      }
-      if (res.status === 409) {
-        const { errorField, message } = data as ValidationError409;
-        formik.setFieldError(errorField, message);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const formik = useFormik({ initialValues, validationSchema, onSubmit });
-
-  useEffect(() => {
-    if (
-      formik.touched.password ||
-      formik.touched.email ||
-      formik.touched.userName ||
-      formik.touched.fullName
-    ) {
-      setInitialDisability(false);
-    }
-    if (
-      !formik.errors.password &&
-      !formik.errors.email &&
-      !formik.errors.fullName &&
-      !formik.errors.userName
-    ) {
-      setButtonIsDisabled(false);
-    }
-    if (
-      formik.errors.password ||
-      formik.errors.email ||
-      formik.errors.userName ||
-      formik.errors.fullName
-    ) {
-      setButtonIsDisabled(true);
-    }
-  }, [formik]);
-
-  console.log(formik.errors);
+  const {formik, initialDisability, buttonIsDisabled} = useGetFormik(setSignUpStep);
 
   return (
     <form
