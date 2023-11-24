@@ -1,0 +1,6 @@
+.input  {
+  @apply text-black;
+  &::placeholder {
+    @apply text-black;
+  }
+}
