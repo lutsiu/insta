@@ -1,5 +1,4 @@
-import { months } from "../data";
-export default function getDayOfTheMonth(month: string, year: string) {
+export default function getAmountDaysOfTheMonth(month: string, year: string) {
   const getLeapYear = (year: number) => {
     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
   };
