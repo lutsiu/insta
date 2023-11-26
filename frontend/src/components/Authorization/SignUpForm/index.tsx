@@ -3,7 +3,7 @@ import Form from "./Form";
 interface Props {
   setSignUpStep: React.Dispatch<React.SetStateAction<number>>
 }
-export default function SignUpForm(props: Props) {
+export default function SignUpFormStep1(props: Props) {
   const {setSignUpStep} = props;
   return (
     <div className="w-full sm:w-[35rem] sm:border-[.1px] border-white flex flex-col items-center pt-[4.5rem] pb-[2.5rem] ">

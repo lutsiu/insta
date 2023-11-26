@@ -67,7 +67,6 @@ export default function useGetFormik(setSignUpStep: React.Dispatch<React.SetStat
       }
       if (res.status === 201) {
         const userId = data as string;
-        console.log('done')
         dispatch(setId(userId));
         setSignUpStep(prev => prev+ 1);
       }

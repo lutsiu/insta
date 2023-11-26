@@ -1,12 +1,14 @@
 import styles from "./styles.module.scss";
 import AuthorizationButton from "../../../Buttons/Authorization";
 import useGetFormik from "./useGetFormik";
+
 interface Props {
   setSignUpStep: React.Dispatch<React.SetStateAction<number>>
 }
-export default function Form(props: Props) {
+export default function FormStep1(props: Props) {
   const {setSignUpStep} = props;
 
+  // logic for sign up step 1 is inside useGetFormik hook
   const {formik, initialDisability, buttonIsDisabled} = useGetFormik(setSignUpStep);
 
   return (
