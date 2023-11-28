@@ -80,6 +80,11 @@ const userSchema = new mongoose.Schema<IUser>({
     type: Boolean,
     default: false,
   },
+  birthDate: {
+    type: String,
+    default : '',
+    required: true
+  }
 });
 
 const User = mongoose.model("User", userSchema);
