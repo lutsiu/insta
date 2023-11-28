@@ -33,6 +33,16 @@ const userReducer = createSlice({
         state.user.userName = action.payload;
       }
     },
+    setPassword(state, action: { payload: string }) {
+      if (state.user) {
+        state.user.password = action.payload;
+      }
+    },
+    setEmail(state, action: { payload: string }) {
+      if (state.user) {
+        state.user.email = action.payload;
+      }
+    },
     setBiography(state, action: { payload: string }) {
       if (state.user) {
         state.user.biography = action.payload;
@@ -52,7 +62,9 @@ export const {
   setFullName,
   setId,
   setProfilePicture,
+  setPassword,
   setUserName,
+  setEmail,
   login,
   logout,
 } = userReducer.actions;

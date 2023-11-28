@@ -1,84 +1,52 @@
 import { FaBirthdayCake } from "react-icons/fa";
-import { months, years } from "./data";
-import { useEffect, useState } from "react";
-import getAmountDaysOfTheMonth from "./utils/getDaysOfMonth";
-import {
-  getAmountOfDaysInMonthForState,
-  getCurrentDay,
-  getCurrentMonth,
-  getCurrentYear,
-} from "./utils/getDates";
+import { useState } from "react";
+import DateSelector from "./DateSelector";
+import AuthorizationButton from "../../Buttons/Authorization";
 export default function AddBirthday() {
-  const [amountOfDaysInMonth, setAmountOfDaysInMonth] = useState(
-    getAmountOfDaysInMonthForState
-  );
-  const [dayOfBirth, setDayOfBirth] = useState<number>(getCurrentDay);
-  const [monthOfBirth, setMonthOfBirth] = useState<string>(getCurrentMonth);
-  const [yearOfBirth, setYearOfBirth] = useState<string>(getCurrentYear);
+  const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
 
-  useEffect(() => {
-    const daysOfMonth = Array.from(
-      { length: getAmountDaysOfTheMonth(monthOfBirth, yearOfBirth) },
-      (_, i) => {
-        return i + 1;
-      }
-    );
-    setAmountOfDaysInMonth(daysOfMonth);
-  }, [yearOfBirth, monthOfBirth]);
-
-  function handleChangeDay(e: React.ChangeEvent<HTMLSelectElement>) {
-    setDayOfBirth(+e.target.value);
-  }
-
-  function handleChangeMonth(e: React.ChangeEvent<HTMLSelectElement>) {
-    setMonthOfBirth(e.target.value);
-  }
-  function handleChangeYear(e: React.ChangeEvent<HTMLSelectElement>) {
-    setYearOfBirth(e.target.value);
-  }
   return (
-    <div className="w-full sm:w-[35rem] sm:border-[.1px] border-white flex flex-col items-center pt-[4.5rem] pb-[2.5rem] ">
-      <div>
+    <div className="w-full sm:w-[35rem] sm:border-[.1px] border-white flex flex-col items-center pt-[2.5rem] pb-[2.5rem] ">
+      <div className="w-[85%] flex flex-col items-center ">
         <div>
-          <FaBirthdayCake />
-          <p>Add your Birthday</p>
+          <FaBirthdayCake
+            className="w-[7.5rem] h-[7.5rem] mb-[2.5rem] ml-[1.5rem]"
+            style={{ transform: "rotate(-14deg)" }}
+          />
+          <p className="text-xl">Add your Birthday</p>
         </div>
-        <div>
-          <p>We need this data in order to use it agains you</p>
-          <p>Why do i need to be your slave?</p>
-          <div className="text-black">
-            <select defaultValue={monthOfBirth} onChange={handleChangeMonth}>
-              {months.map((month, i) => {
-                return (
-                  <option key={i} value={month}>
-                    {month}
-                  </option>
-                );
-              })}
-            </select>
-            <select onChange={handleChangeDay} defaultValue={dayOfBirth}>
-              {amountOfDaysInMonth.map((day, i) => {
-                return (
-                  <option key={i} value={day}>
-                    {day}
-                  </option>
-                );
-              })}
-            </select>
-            <select defaultValue={yearOfBirth} onChange={handleChangeYear}>
-              {years.map((year, i) => {
-                return (
-                  <option key={i} value={year}>
-                    {year}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+        <div className="mt-[2rem] text-center px-[2rem]">
+          <p className="text-xl ">
+            We need this data in order to use it agains you.
+          </p>
+          <p className="text-purple-400 text-xl">
+            Why do i need to provide my birthday?
+          </p>
+        </div>
+        <div className="mt-[1.3rem]">
+          <DateSelector setButtonIsDisabled={setButtonIsDisabled} />
         </div>
       </div>
-
-      <div className="text-center mt-[4rem] px-[6rem]">
+      <div className="w-[75%] mx-auto text-center mt-[1rem]">
+        <p>
+          You need to enter the date you were born and you must have at least 14
+          years, since we hate super-young-ass users
+        </p>
+        <p className="mt-[1.5rem]">
+          Use your own birthday, don't even try to con
+        </p>
+        <div className="w-[85%] mx-auto sm:w-full mt-[2rem]">
+          <AuthorizationButton
+            content="Next"
+            initialDisability={false}
+            buttonIsDisabled={buttonIsDisabled}
+          />
+          <p className="mt-[1.5rem] text-xl text-purple-500 font-medium hover:text-purple-600 cursor-pointer">
+            Go Back
+          </p>
+        </div>
+      </div>
+      <div className="text-center mt-[3rem] px-[6rem]">
         Some boring-ass description of some laws blah blah blah
       </div>
     </div>

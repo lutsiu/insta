@@ -3,7 +3,7 @@ import SignUpForm from "../../components/Authorization/SignUpForm";
 import { Link } from "react-router-dom";
 import AddBirthday from "../../components/Authorization/AddBirthday";
 export default function SignUpPage() {
-  const [signUpStep, setSignUpStep] = useState(1);
+  const [signUpStep, setSignUpStep] = useState(0);
  
   return (
     <main className="pt-[1.5rem]">

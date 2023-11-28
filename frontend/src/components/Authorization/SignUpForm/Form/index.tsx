@@ -3,13 +3,19 @@ import AuthorizationButton from "../../../Buttons/Authorization";
 import useGetFormik from "./useGetFormik";
 
 interface Props {
-  setSignUpStep: React.Dispatch<React.SetStateAction<number>>
+  setSignUpStep: React.Dispatch<React.SetStateAction<number>>;
 }
 export default function FormStep1(props: Props) {
-  const {setSignUpStep} = props;
+  const { setSignUpStep } = props;
 
   // logic for sign up step 1 is inside useGetFormik hook
-  const {formik, initialDisability, buttonIsDisabled} = useGetFormik(setSignUpStep);
+  const {
+    formik,
+    initialDisability,
+    buttonIsDisabled,
+    userNameIsUsed,
+    emailIsUsed,
+  } = useGetFormik(setSignUpStep);
 
   return (
     <form
@@ -17,9 +23,11 @@ export default function FormStep1(props: Props) {
       onSubmit={formik.handleSubmit}
     >
       <div>
-        {formik.errors.email && formik.touched.email && (
+        {(formik.errors.email || emailIsUsed) && formik.touched.email && (
           <p className="mb-[1rem] text-pink-500 text-lg">
-            {formik.errors.email}
+            {emailIsUsed
+              ? "Another account is using the same email"
+              : formik.errors.email}
           </p>
         )}
         <input
@@ -27,7 +35,7 @@ export default function FormStep1(props: Props) {
           className={`${styles.input} w-full outline-none text-xl border-[1px] bg-gray-100 py-[.7rem]  rounded-md px-[.7rem]`}
           style={{
             borderColor:
-              formik.errors.email && formik.touched.email
+              (formik.errors.email || emailIsUsed) && formik.touched.email
                 ? "rgb(219 39 119)"
                 : "",
           }}
@@ -61,9 +69,9 @@ export default function FormStep1(props: Props) {
         />
       </div>
       <div>
-        {formik.errors.userName && formik.touched.userName && (
+        {(formik.errors.userName || userNameIsUsed) && formik.touched.userName && (
           <p className="mb-[1rem] text-pink-500 text-lg">
-            {formik.errors.userName}
+            {userNameIsUsed ? "Another account is using the same username" : formik.errors.userName}
           </p>
         )}
         <input
@@ -71,7 +79,7 @@ export default function FormStep1(props: Props) {
           className={`${styles.input} w-full outline-none text-xl border-[1px] bg-gray-100 py-[.7rem]  rounded-md px-[.7rem]`}
           style={{
             borderColor:
-              formik.errors.userName && formik.touched.userName
+            (formik.errors.userName || userNameIsUsed) && formik.touched.userName
                 ? "rgb(219 39 119)"
                 : "",
           }}

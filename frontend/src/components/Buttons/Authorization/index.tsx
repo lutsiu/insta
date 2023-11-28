@@ -10,7 +10,7 @@ export default function AuthorizationButton(props: Props) {
   return (
     <button
         type="submit"
-        className="disabled:bg-purple-400 bg-purple-500 rounded-md py-[.5rem] text-xl"
+        className="disabled:bg-purple-400 bg-purple-500 rounded-lg py-[.5rem] text-xl w-full"
         disabled={initialDisability || buttonIsDisabled}
       >
         {content}

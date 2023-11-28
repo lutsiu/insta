@@ -1,13 +1,22 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { ValidationError400, ValidationError409 } from "./errorInterfaces";
+import { ValidationError409 } from "./errorInterfaces";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setId } from "../../../../redux/user";
+import {
+  setUserName,
+  setFullName,
+  setPassword,
+  setEmail,
+} from "../../../../redux/user";
 
-export default function useGetFormik(setSignUpStep: React.Dispatch<React.SetStateAction<number>>) {
+export default function useGetFormik(
+  setSignUpStep: React.Dispatch<React.SetStateAction<number>>
+) {
   const [initialDisability, setInitialDisability] = useState(true);
   const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
+  const [emailIsUsed, setEmailIsUsed] = useState(false);
+  const [userNameIsUsed, setUserNameIsUsed] = useState(false);
   const dispatch = useDispatch();
   const initialValues = {
     email: "",
@@ -37,46 +46,83 @@ export default function useGetFormik(setSignUpStep: React.Dispatch<React.SetStat
       .min(8, "Password must contain at least 8 characters"),
   });
 
-  const onSubmit = async (values: {
+  const onSubmit = (values: {
     email: string;
     userName: string;
     fullName: string;
     password: string;
   }) => {
-    try {
-      const body = JSON.stringify(values);
-      const res = await fetch("http://localhost:4000/auth/sign-up/step-1", {
-        headers: { "Content-Type": "application/json" },
-        body,
-        method: "POST",
-      });
-      const data = (await res.json()) as
-        | ValidationError409
-        | ValidationError400
-        | string;
-      if (res.status === 400) {
-        const { errors } = data as ValidationError400;
-        errors.forEach((err) => {
-          console.log(err);
-          formik.setFieldError(err.path, err.msg);
-        });
-      }
-      if (res.status === 409) {
-        const { errorField, message } = data as ValidationError409;
-        formik.setFieldError(errorField, message);
-      }
-      if (res.status === 201) {
-        const userId = data as string;
-        dispatch(setId(userId));
-        setSignUpStep(prev => prev+ 1);
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    const { email, userName, fullName, password } = values;
+    dispatch(setEmail(email));
+    dispatch(setUserName(userName));
+    dispatch(setFullName(fullName));
+    dispatch(setPassword(password));
+    setSignUpStep((prev) => prev + 1);
   };
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
 
+  useEffect(() => {
+    async function checkEmailUniqueness() {
+      try {
+        const body = JSON.stringify({
+          email: formik.values.email.toLowerCase().trim(),
+        });
+        console.log(body);
+        const res = await fetch(
+          "http://localhost:4000/auth/check-email-uniqueness",
+          {
+            body,
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const data = (await res.json()) as string | ValidationError409;
+        if (res.status === 409) {
+          const { errorField, message } = data as ValidationError409;
+          formik.setFieldError(errorField, message);
+          setEmailIsUsed(true);
+        } else {
+          setEmailIsUsed(false);
+        }
+        console.log(res.status);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    checkEmailUniqueness();
+  }, [formik.values.email]);
+
+  useEffect(() => {
+    async function checkUsernnameUniqueness() {
+      try {
+        const body = JSON.stringify({
+          userName: formik.values.userName.toLowerCase().trim(),
+        });
+        console.log(body);
+        const res = await fetch(
+          "http://localhost:4000/auth/check-username-uniqueness",
+          {
+            body,
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const data = (await res.json()) as string | ValidationError409;
+        if (res.status === 409) {
+          const { errorField, message } = data as ValidationError409;
+          formik.setFieldError(errorField, message);
+          setUserNameIsUsed(true);
+        } else {
+          setUserNameIsUsed(false);
+        }
+        console.log(res.status);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    checkUsernnameUniqueness();
+  }, [formik.values.userName]);
 
   useEffect(() => {
     if (
@@ -91,7 +137,9 @@ export default function useGetFormik(setSignUpStep: React.Dispatch<React.SetStat
       !formik.errors.password &&
       !formik.errors.email &&
       !formik.errors.fullName &&
-      !formik.errors.userName
+      !formik.errors.userName &&
+      !userNameIsUsed &&
+      !emailIsUsed
     ) {
       setButtonIsDisabled(false);
     }
@@ -99,10 +147,18 @@ export default function useGetFormik(setSignUpStep: React.Dispatch<React.SetStat
       formik.errors.password ||
       formik.errors.email ||
       formik.errors.userName ||
-      formik.errors.fullName
+      formik.errors.fullName ||
+      userNameIsUsed ||
+      emailIsUsed
     ) {
       setButtonIsDisabled(true);
     }
   }, [formik]);
-  return {formik, initialDisability, buttonIsDisabled}
+  return {
+    formik,
+    initialDisability,
+    buttonIsDisabled,
+    userNameIsUsed,
+    emailIsUsed,
+  };
 }
