@@ -123,6 +123,7 @@ export default function FormStep1(props: Props) {
         </div>
       </div>
       <AuthorizationButton
+        type="submit"
         content="Sign up"
         initialDisability={initialDisability}
         buttonIsDisabled={buttonIsDisabled}

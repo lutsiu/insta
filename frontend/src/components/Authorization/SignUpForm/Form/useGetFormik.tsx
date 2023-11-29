@@ -2,14 +2,11 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { ValidationError409 } from "./errorInterfaces";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  setUserName,
-  setFullName,
-  setPassword,
-  setEmail,
+  signUpStep1
 } from "../../../../redux/user";
-
+import {ReduxState} from '../../../../redux/stateInterface';
 export default function useGetFormik(
   setSignUpStep: React.Dispatch<React.SetStateAction<number>>
 ) {
@@ -18,10 +15,11 @@ export default function useGetFormik(
   const [emailIsUsed, setEmailIsUsed] = useState(false);
   const [userNameIsUsed, setUserNameIsUsed] = useState(false);
   const dispatch = useDispatch();
+  const {user} = useSelector((state: ReduxState) => state.user);
   const initialValues = {
-    email: "",
-    userName: "",
-    fullName: "",
+    email: user?.email ? user.email: "",
+    userName: user?.userName ? user.userName : "",
+    fullName: user?.fullName ? user.fullName : "",
     password: "",
   };
 
@@ -52,11 +50,7 @@ export default function useGetFormik(
     fullName: string;
     password: string;
   }) => {
-    const { email, userName, fullName, password } = values;
-    dispatch(setEmail(email));
-    dispatch(setUserName(userName));
-    dispatch(setFullName(fullName));
-    dispatch(setPassword(password));
+    dispatch(signUpStep1(values));
     setSignUpStep((prev) => prev + 1);
   };
 
@@ -66,9 +60,9 @@ export default function useGetFormik(
     async function checkEmailUniqueness() {
       try {
         const body = JSON.stringify({
-          email: formik.values.email.toLowerCase().trim(),
+          email: formik.values.email.trim(),
         });
-        console.log(body);
+
         const res = await fetch(
           "http://localhost:4000/auth/check-email-uniqueness",
           {
@@ -85,7 +79,7 @@ export default function useGetFormik(
         } else {
           setEmailIsUsed(false);
         }
-        console.log(res.status);
+
       } catch (err) {
         console.log(err);
       }
@@ -99,7 +93,7 @@ export default function useGetFormik(
         const body = JSON.stringify({
           userName: formik.values.userName.toLowerCase().trim(),
         });
-        console.log(body);
+
         const res = await fetch(
           "http://localhost:4000/auth/check-username-uniqueness",
           {
@@ -116,7 +110,7 @@ export default function useGetFormik(
         } else {
           setUserNameIsUsed(false);
         }
-        console.log(res.status);
+
       } catch (err) {
         console.log(err);
       }

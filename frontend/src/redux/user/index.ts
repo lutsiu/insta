@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IUserState, LoginAction } from "./interfaces";
+import { IUserState, LoginAction, SignUpStep1Action } from "./interfaces";
 const initialState: IUserState = {
   token: null,
   user: null,
@@ -18,53 +18,38 @@ const userReducer = createSlice({
       state.user = null;
       state.token = null;
     },
-    setId(state, action: { payload: string }) {
-      if (state.user) {
-        state.user._id = action.payload;
-      }
+    setId(state, action: {payload: string}) {
+      if (!state.user) return;
+      state.user._id = action.payload;
     },
-    setFullName(state, action: { payload: string }) {
-      if (state.user) {
-        state.user.fullName = action.payload;
-      }
+    setDateOfBirth(state, action: {payload: string }) {
+      if (!state.user) return;
+      state.user.dateOfBirth = action.payload;
     },
-    setUserName(state, action: { payload: string }) {
-      if (state.user) {
-        state.user.userName = action.payload;
-      }
-    },
-    setPassword(state, action: { payload: string }) {
-      if (state.user) {
-        state.user.password = action.payload;
-      }
-    },
-    setEmail(state, action: { payload: string }) {
-      if (state.user) {
-        state.user.email = action.payload;
-      }
-    },
-    setBiography(state, action: { payload: string }) {
-      if (state.user) {
-        state.user.biography = action.payload;
-      }
-    },
-    setProfilePicture(state, action: { payload: string }) {
-      if (state.user) {
-        state.user.profilePicture = action.payload;
-      }
+    signUpStep1(state, action: SignUpStep1Action) {
+      const { email, userName, fullName, password} = action.payload;
+      state.user = {
+        _id: "",
+        biography: "",
+        dateOfBirth: "",
+        chats: [],
+        confirmationCode: 0,
+        email,
+        followers: [],
+        following: [],
+        fullName,
+        likedPosts: [],
+        password,
+        posts: [],
+        postsWithUser: [],
+        profilePicture: "",
+        savedPosts: [],
+        userIsVerified: false,
+        userName,
+      };
     },
   },
 });
 
 export default userReducer.reducer;
-export const {
-  setBiography,
-  setFullName,
-  setId,
-  setProfilePicture,
-  setPassword,
-  setUserName,
-  setEmail,
-  login,
-  logout,
-} = userReducer.actions;
+export const { login, logout, signUpStep1,setId, setDateOfBirth } = userReducer.actions;

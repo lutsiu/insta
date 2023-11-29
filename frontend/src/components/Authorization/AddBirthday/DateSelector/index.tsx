@@ -3,21 +3,31 @@ import { useEffect, useState } from "react";
 import getAmountDaysOfTheMonth from "../utils/getDaysOfMonth";
 import {
   getAmountOfDaysInMonthForState,
-  getCurrentDay,
-  getCurrentMonth,
-  getCurrentYear,
 } from "../utils/getDates";
 interface Props {
   setButtonIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  day: {
+    dayOfBirth: number,
+    setDayOfBirth: React.Dispatch<React.SetStateAction<number>>
+  },
+  month: {
+    monthOfBirth: string
+    setMonthOfBirth: React.Dispatch<React.SetStateAction<string>>
+  },
+  year: {
+    yearOfBirth: string,
+    setYearOfBirth: React.Dispatch<React.SetStateAction<string>>
+  }
 }
 export default function DateSelector(props: Props) {
-  const { setButtonIsDisabled } = props;
+  const { setButtonIsDisabled, day, month, year } = props;
+  const {dayOfBirth, setDayOfBirth} = day;
+  const {monthOfBirth, setMonthOfBirth} = month;
+  const {yearOfBirth, setYearOfBirth} = year;
   const [amountOfDaysInMonth, setAmountOfDaysInMonth] = useState(
     getAmountOfDaysInMonthForState
   );
-  const [dayOfBirth, setDayOfBirth] = useState<number>(getCurrentDay);
-  const [monthOfBirth, setMonthOfBirth] = useState<string>(getCurrentMonth);
-  const [yearOfBirth, setYearOfBirth] = useState<string>(getCurrentYear);
+  
 
   function handleChangeDay(e: React.ChangeEvent<HTMLSelectElement>) {
     setDayOfBirth(+e.target.value);

@@ -12,3 +12,12 @@ export interface LoginAction {
   }
 }
 
+
+export interface SignUpStep1Action  {
+  payload: {
+    email: string,
+    userName: string, 
+    fullName: string,
+    password: string
+  }
+}
