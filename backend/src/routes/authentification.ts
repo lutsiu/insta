@@ -95,4 +95,25 @@ router.delete("/delete-user-data/:userName", async (req, res) => {
   }
 });
 
+router.post("/check-confirmation-code", async (req, res) => {
+  try {
+    const {_id, confirmationCode} = req.body as {_id: string, confirmationCode: string};
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json("User wasn't found");
+    }
+    const confirmationCodeMatches = user.confirmationCode?.toString() === confirmationCode;
+    if (!confirmationCodeMatches) {
+      return res.status(409).json("This code is invalid. Try it again or request new one");
+    }
+    user.confirmationCode = null;
+    user.userIsVerified = true;
+    await user.save();
+    return res.status(201).json("Registration is finished successfully");
+
+  } catch (err) {
+    res.status(400).json(err);
+  }
+})
+
 export default router;
