@@ -7,13 +7,22 @@ import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../redux/stateInterface";
 interface Props {
   setSignUpStep: React.Dispatch<React.SetStateAction<number>>;
+  codeWasResend: boolean;
+  errorResponse: string;
+  setErrorResponse: React.Dispatch<React.SetStateAction<string>>;
 }
 export default function Form(props: Props) {
   const { user } = useSelector((state: ReduxState) => state.user);
-  const { setSignUpStep } = props;
+  const {
+    setSignUpStep,
+    codeWasResend,
+
+    errorResponse,
+    setErrorResponse,
+  } = props;
   const [initialDisability, setInitialDisability] = useState(true);
   const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-  const [errorResponse, setErrorResponse] = useState("");
+
   const initialValues = {
     confirmationCode: "",
   };
@@ -40,12 +49,13 @@ export default function Form(props: Props) {
           body,
         }
       );
-      const responseString = await res.json() as string;
+      const responseString = (await res.json()) as string;
       if (res.status === 409 || res.status === 404 || res.status === 400) {
         setErrorResponse(responseString);
-      } 
+      }
       if (res.status === 201) {
-        setSignUpStep((prev => prev + 1));
+        setErrorResponse("");
+        setSignUpStep((prev) => prev + 1);
       }
     } catch (err) {
       console.log(err);
@@ -78,12 +88,15 @@ export default function Form(props: Props) {
                 {formik.errors.confirmationCode}
               </p>
             )}
+          {codeWasResend && (
+            <p className="text-center text-xl mb-[1.5rem]">Your code was resend</p>
+          )}
           <input
             type="text"
             className={`${styles.input} w-full outline-none text-xl border-[1px] bg-gray-100 py-[.7rem]  rounded-md px-[.7rem]`}
             style={{
               borderColor:
-                formik.errors.email && formik.touched.confirmationCode
+                formik.errors.confirmationCode && formik.touched.confirmationCode
                   ? "rgb(219 39 119)"
                   : "",
             }}
