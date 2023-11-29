@@ -116,4 +116,21 @@ router.post("/check-confirmation-code", async (req, res) => {
   }
 })
 
+router.post('/resend-code', async (req, res) => {
+  try {
+    const {_id } = req.body as {_id: string};
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json("User wasn't found");
+    }
+    const newCode = randomNumber;
+    sendMail(user.email, newCode, true); 
+    user.confirmationCode = newCode;
+    await user.save();
+    return res.status(200).json("Code was send again");
+  } catch (err) {
+    res.status(404).json(err);
+  }
+})
+
 export default router;
