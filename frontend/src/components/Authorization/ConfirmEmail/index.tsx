@@ -11,7 +11,7 @@ export default function ConfirmEmail(props: Props) {
   const { user } = useSelector((state: ReduxState) => state.user);
   const [codeWasResend, setCodeWasResend] = useState(false);
   const [errorResponse, setErrorResponse] = useState("");
-
+  
   async function resendCode() {
     if (codeWasResend) return;
     try {

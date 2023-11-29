@@ -10,9 +10,12 @@ export default function SignUpPage() {
   const [signUpStep, setSignUpStep] = useState(0);
   const dispatch = useDispatch();
   const { user } = useSelector((state: ReduxState) => state.user);
-
+  console.log(signUpStep)
   useEffect(() => {
+    if (signUpStep === 3) return;
     async function deleteUserData(e: BeforeUnloadEvent) {
+      if (signUpStep === 3) return;
+
       e.preventDefault();
 
       try {
@@ -38,8 +41,13 @@ export default function SignUpPage() {
         console.log(err);
       }
     }
-    window.addEventListener("beforeunload", deleteUserData);
-  }, [dispatch, user]);
+    if (signUpStep !== 3) {
+      window.addEventListener("beforeunload", deleteUserData);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", deleteUserData);
+    };
+  }, [dispatch, user, signUpStep]);
 
   return (
     <main className="pt-[1.5rem]">

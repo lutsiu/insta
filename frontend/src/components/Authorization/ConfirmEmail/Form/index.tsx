@@ -5,6 +5,7 @@ import styles from "./styles.module.scss";
 import AuthorizationButton from "../../../Buttons/Authorization";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../redux/stateInterface";
+import {useNavigate} from 'react-router-dom';
 interface Props {
   setSignUpStep: React.Dispatch<React.SetStateAction<number>>;
   codeWasResend: boolean;
@@ -22,7 +23,7 @@ export default function Form(props: Props) {
   } = props;
   const [initialDisability, setInitialDisability] = useState(true);
   const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
-
+  const navigate = useNavigate();
   const initialValues = {
     confirmationCode: "",
   };
@@ -55,7 +56,10 @@ export default function Form(props: Props) {
       }
       if (res.status === 201) {
         setErrorResponse("");
-        setSignUpStep((prev) => prev + 1);
+        setSignUpStep(3);
+        setTimeout(() => {
+            navigate('/')
+        }, 500);
       }
     } catch (err) {
       console.log(err);
