@@ -19,5 +19,6 @@ export const validateSignUpStep1 = [
     .withMessage(
       "Username must contain at least 2 characters and maximum 40 characters"
     ),
-    body('password').notEmpty().trim().isLength({min: 8}).withMessage("Password must containt at least 8 characters")
+    body('password').notEmpty().trim().isLength({min: 8}).withMessage("Password must containt at least 8 characters"),
+    body("dateOfBirth").trim().notEmpty().withMessage("You need to provide a year of your birth"),
 ];

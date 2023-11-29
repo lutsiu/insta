@@ -15,7 +15,7 @@ export interface IUser {
   chats: string[],
   confirmationCode: number | null,
   userIsVerified: boolean,
-  birthDate: string
+  dateOfBirth: string
 }
 
 export interface IMedia {

@@ -80,7 +80,7 @@ const userSchema = new mongoose.Schema<IUser>({
     type: Boolean,
     default: false,
   },
-  birthDate: {
+  dateOfBirth: {
     type: String,
     default : '',
     required: true
