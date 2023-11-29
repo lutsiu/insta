@@ -5,6 +5,7 @@ import AddBirthday from "../../components/Authorization/AddBirthday";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/user";
 import { ReduxState } from "../../redux/stateInterface";
+import ConfirmEmail from "../../components/Authorization/ConfirmEmail";
 export default function SignUpPage() {
   const [signUpStep, setSignUpStep] = useState(0);
   const dispatch = useDispatch();
@@ -24,8 +25,8 @@ export default function SignUpPage() {
         const { userName, dateOfBirth } = user;
 
         if (dateOfBirth && dateOfBirth.length > 0) {
-          const res = await fetch(
-            `http://localhost:4000/auth/delete-user-data/lutsiu`,
+          await fetch(
+            `http://localhost:4000/auth/delete-user-data/${userName}`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -45,6 +46,7 @@ export default function SignUpPage() {
       <div className="flex flex-col items-center">
         {signUpStep === 0 && <SignUpForm setSignUpStep={setSignUpStep} />}
         {signUpStep === 1 && <AddBirthday setSignUpStep={setSignUpStep} />}
+        {signUpStep === 2 && <ConfirmEmail setSignUpStep={setSignUpStep}/>}
         <div className="w-full sm:w-[35rem] sm:border-[.1px] border-white flex flex-col items-center mt-[1rem] py-[2rem] text-lg">
           <p>
             Have an account?{" "}
