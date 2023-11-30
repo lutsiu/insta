@@ -75,7 +75,11 @@ const userSchema = new mongoose.Schema<IUser>({
     type: [String],
     default: [],
   },
-  confirmationCode: Number,
+  confirmationCode: {
+    type: Number,
+    default: null,
+    required:false
+  },
   userIsVerified: {
     type: Boolean,
     default: false,

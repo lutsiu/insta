@@ -25,7 +25,7 @@ export const sendMail = function (
   });
 };
 
-export const restorePassword = function (userEmail: string, token: string) {
+export const restorePassword = function (userEmail: string, token: string, id: string) {
   transporter.sendMail({
     to: userEmail,
     from: "nodetest2023@gmail.com",
@@ -33,7 +33,7 @@ export const restorePassword = function (userEmail: string, token: string) {
     html: `
       <div>
         <p>You requested a password reset. Click 
-          <a href="http://127.0.0.1:5173/restore-password/token/${token}" 
+          <a href="http://127.0.0.1:5173/restore-password/token?token=${token}&id=${id}" 
             style="text-decoration: none; font-weight: bold; color: #9333ea; font-size: 1.2rem;">
             here
           </a> 

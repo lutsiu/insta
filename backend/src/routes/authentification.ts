@@ -97,59 +97,104 @@ router.delete("/delete-user-data/:userName", async (req, res) => {
 
 router.post("/check-confirmation-code", async (req, res) => {
   try {
-    const {_id, confirmationCode} = req.body as {_id: string, confirmationCode: string};
+    const { _id, confirmationCode } = req.body as {
+      _id: string;
+      confirmationCode: string;
+    };
     const user = await User.findById(_id);
     if (!user) {
       return res.status(404).json("User wasn't found");
     }
-    const confirmationCodeMatches = user.confirmationCode?.toString() === confirmationCode;
+    const confirmationCodeMatches =
+      user.confirmationCode?.toString() === confirmationCode;
     if (!confirmationCodeMatches) {
-      return res.status(409).json("This code is invalid. Try it again or request new one");
+      return res
+        .status(409)
+        .json("This code is invalid. Try it again or request new one");
     }
-    user.confirmationCode = null;
+    user.confirmationCode = undefined;
     user.userIsVerified = true;
     await user.save();
     return res.status(201).json("Registration is finished successfully");
-
   } catch (err) {
     res.status(500).json(err);
   }
-})
+});
 
-router.post('/resend-code', async (req, res) => {
+router.post("/resend-code", async (req, res) => {
   try {
-    const {_id } = req.body as {_id: string};
+    const { _id } = req.body as { _id: string };
     const user = await User.findById(_id);
     if (!user) {
       return res.status(404).json("User wasn't found");
     }
+    // create new confirmation code
     const newCode = randomNumber;
-    sendMail(user.email, newCode, true); 
+    sendMail(user.email, newCode, true);
+    // save data
     user.confirmationCode = newCode;
     await user.save();
     return res.status(200).json("Code was send again");
   } catch (err) {
     res.status(500).json(err);
   }
-})
+});
 
 router.post("/send-restore-password-link", async (req, res) => {
   try {
-    const {email} = req.body as {email: string};
-    const user = await User.findOne({email});
+    const { email } = req.body as { email: string };
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json("No user with this email was found");
     }
 
-    // creation of token 
+    // creation of token
     const resetToken = Math.random().toString(36).substring(7);
-    
+
+    // save data
     user.resetToken = resetToken;
     user.resetTokenExpiration = Date.now() + 3600000;
+    user.userIsVerified = false;
     await user.save();
-    restorePassword(user.email, user.resetToken);
+    // send email
+    restorePassword(user.email, user.resetToken, user.id);
 
     res.status(200).json("Reset email sent successfully");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.put("/change-password", async (req, res) => {
+  try {
+    const { id, resetToken, password } = req.body as {
+      id: string;
+      resetToken: string;
+      password: string;
+    };
+
+    // find user
+    const user = await User.findOne({
+      _id: id,
+      resetToken,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(404).json("Invalid or expired reset token");
+    }
+
+    // hash password
+    const salt = await bcrypt.genSalt(12);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+
+    // save data
+    user.password = encryptedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
+    user.userIsVerified = true;
+    await user.save();
+
+    res.status(200).json("Password reset successfully");
   } catch (err) {
     res.status(500).json(err);
   }

@@ -13,7 +13,7 @@ export interface IUser {
   followers: string[],
   following: string[],
   chats: string[],
-  confirmationCode: number | null,
+  confirmationCode?: number | null,
   userIsVerified: boolean,
   dateOfBirth: string
   resetToken?: string,
