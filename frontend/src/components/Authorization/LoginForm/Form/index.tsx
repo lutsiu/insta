@@ -1,5 +1,5 @@
 import styles from "./styles.module.scss";
-import { setIn, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as yup from "yup";
 import { useState, useEffect } from "react";
 import AuthorizationButton from "../../../Buttons/Authorization";
