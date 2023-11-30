@@ -16,6 +16,8 @@ export interface IUser {
   confirmationCode: number | null,
   userIsVerified: boolean,
   dateOfBirth: string
+  resetToken?: string,
+  resetTokenExpiration?: number;
 }
 
 export interface IMedia {

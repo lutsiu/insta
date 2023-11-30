@@ -84,6 +84,16 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     default : '',
     required: true
+  },
+  resetToken: {
+    type: String,
+    default: '',
+    required: false
+  },
+  resetTokenExpiration: {
+    type: Number,
+    default: null,
+    required:false
   }
 });
 

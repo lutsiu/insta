@@ -4,7 +4,7 @@ import { validationResult } from "express-validator";
 import { validateSignUpStep1 } from "../validations/authentification.ts";
 import randomNumber from "../utils/generateRandomNumber.ts";
 import User from "../models/User.ts";
-import { sendMail } from "../utils/nodemailer.ts";
+import { restorePassword, sendMail } from "../utils/nodemailer.ts";
 const router = express.Router();
 
 router.post("/check-email-uniqueness", async (req: Request, res: Response) => {
@@ -20,7 +20,7 @@ router.post("/check-email-uniqueness", async (req: Request, res: Response) => {
       return res.status(200).json("User can use this email");
     }
   } catch (err) {
-    res.status(404).json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -39,7 +39,7 @@ router.post(
         return res.status(200).json("User can use this user name");
       }
     } catch (err) {
-      res.status(404).json(err);
+      res.status(500).json(err);
     }
   }
 );
@@ -80,7 +80,7 @@ router.post(
       await user.save();
       return res.status(201).json(user._id);
     } catch (err) {
-      res.status(404).json(err);
+      res.status(500).json(err);
     }
   }
 );
@@ -91,7 +91,7 @@ router.delete("/delete-user-data/:userName", async (req, res) => {
     await User.findOneAndDelete({ userName });
     return res.status(204).json("deleted");
   } catch (err) {
-    res.status(404).json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -112,7 +112,7 @@ router.post("/check-confirmation-code", async (req, res) => {
     return res.status(201).json("Registration is finished successfully");
 
   } catch (err) {
-    res.status(400).json(err);
+    res.status(500).json(err);
   }
 })
 
@@ -129,8 +129,29 @@ router.post('/resend-code', async (req, res) => {
     await user.save();
     return res.status(200).json("Code was send again");
   } catch (err) {
-    res.status(404).json(err);
+    res.status(500).json(err);
   }
 })
 
+router.post("/send-restore-password-link", async (req, res) => {
+  try {
+    const {email} = req.body as {email: string};
+    const user = await User.findOne({email});
+    if (!user) {
+      return res.status(404).json("No user with this email was found");
+    }
+
+    // creation of token 
+    const resetToken = Math.random().toString(36).substring(7);
+    
+    user.resetToken = resetToken;
+    user.resetTokenExpiration = Date.now() + 3600000;
+    await user.save();
+    restorePassword(user.email, user.resetToken);
+
+    res.status(200).json("Reset email sent successfully");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 export default router;
