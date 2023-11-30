@@ -13,7 +13,7 @@ function App() {
       element: <RestorePasswordPageStep1 />,
     },
     {
-      path: "/restore-password/token/:token",
+      path: "/restore-password/token/",
       element: <RestorePasswordPageStep2 />,
     },
   ]);
