@@ -1,5 +1,5 @@
 export interface IUser {
-  _id: string,
+  _id: string
   fullName: string,
   userName: string,
   password: string,
@@ -13,7 +13,10 @@ export interface IUser {
   followers: string[],
   following: string[],
   chats: string[],
-  confirmationCode: number | null,
+  confirmationCode?: number | null,
   userIsVerified: boolean,
   dateOfBirth: string
+  resetToken?: string,
+  resetTokenExpiration?: number;
+  token?: string | null;
 }

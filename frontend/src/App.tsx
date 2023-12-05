@@ -3,6 +3,7 @@ import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/SignUp";
 import RestorePasswordPageStep1 from "./pages/RestorePassword/Step1";
 import RestorePasswordPageStep2 from "./pages/RestorePassword/Step2";
+import HomePage from "./pages/Home";
 
 function App() {
   const router = createBrowserRouter([
@@ -16,6 +17,10 @@ function App() {
       path: "/restore-password/token/",
       element: <RestorePasswordPageStep2 />,
     },
+    {
+      path: '/home', 
+      element: <HomePage/>
+    }
   ]);
 
   return <RouterProvider router={router} />;

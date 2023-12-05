@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IUserState, LoginAction, SignUpStep1Action } from "./interfaces";
 const initialState: IUserState = {
-  token: null,
+
   user: null,
 };
 
@@ -10,13 +10,11 @@ const userReducer = createSlice({
   initialState,
   reducers: {
     login(state, action: LoginAction) {
-      const { user, token } = action.payload;
+      const { user} = action.payload;
       state.user = user;
-      state.token = token;
     },
     logout(state) {
       state.user = null;
-      state.token = null;
     },
     setId(state, action: {payload: string}) {
       if (!state.user) return;
