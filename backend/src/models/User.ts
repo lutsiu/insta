@@ -98,7 +98,12 @@ const userSchema = new mongoose.Schema<IUser>({
     type: Number,
     default: null,
     required:false
-  }
+  },
+  token: {
+    type: String,
+    default: '',
+    required: false
+  },
 });
 
 const User = mongoose.model("User", userSchema);

@@ -5,6 +5,7 @@ import { validateSignUpStep1 } from "../validations/authentification.ts";
 import randomNumber from "../utils/generateRandomNumber.ts";
 import User from "../models/User.ts";
 import { restorePassword, sendMail } from "../utils/nodemailer.ts";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 
 router.post("/check-email-uniqueness", async (req: Request, res: Response) => {
@@ -199,4 +200,36 @@ router.put("/change-password", async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+router.post('/login', async (req,res) => {
+  try {
+    const {userNameOrEmail, password} = req.body as {userNameOrEmail: string; password: string};
+    let queryField: "userName" | "email";
+
+    if (userNameOrEmail.includes(".com") && userNameOrEmail.includes("@")) {
+      queryField = "email";
+    } else {
+      queryField ="userName";
+    }
+
+    const user = await User.findOne({[queryField] : userNameOrEmail});
+
+    if (!user) {
+      return res.status(404).json("Credentials are wrong");
+    }
+    
+    const passwordsMatching = await  bcrypt.compare(password, user.password);
+
+    if (!passwordsMatching) {
+      return res.status(404).json("Credentials are wrong");
+    }
+
+    const token = jwt.sign({id: user._id}, process.env.JWT_SECRET as string);
+    user.token = token;
+    await user.save();
+    res.status(200).json({user});
+  } catch (err) {
+    res.status(500).json(err);
+  }
+})
 export default router;

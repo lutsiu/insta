@@ -18,6 +18,7 @@ export interface IUser {
   dateOfBirth: string
   resetToken?: string,
   resetTokenExpiration?: number;
+  token?: string | null;
 }
 
 export interface IMedia {
