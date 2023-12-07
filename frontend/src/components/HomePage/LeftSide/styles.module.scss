@@ -1,0 +1,14 @@
+.container  {
+  width: 16% !important;
+  &-shrinked {
+    width: 6% !important;
+  }
+}
+.ul {
+  @apply lg:w-fit lg:mx-auto xl:w-auto  2xl:mx-0;
+  &-shrinked {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: fit-content !important;
+  }
+}

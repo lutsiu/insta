@@ -1,8 +1,8 @@
 import { IUser } from "../../interfaces/models"
 
-export interface IUserState {
-  user: null | IUser
-}
+export type IUserState =  null | IUser
+   
+
 
 export interface LoginAction {
   payload: {
