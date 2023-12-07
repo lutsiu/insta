@@ -18,7 +18,7 @@ export default function RightSide() {
     };
   });
   return (
-    <div className="xl:w-[25%] 2xl:w-[20%] mt-[5rem] pl-[2rem]">
+    <div className="xl:w-[25%] 2xl:w-[30%] mt-[5rem] ">
       <AccountItem
         isUserAccount={true}
         img={"https://sklepotaku.pl/userdata/public/news/images/4.jpg"}
